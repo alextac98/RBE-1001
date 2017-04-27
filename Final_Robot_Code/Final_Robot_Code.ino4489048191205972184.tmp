@@ -1,0 +1,149 @@
+#include <DFW.h>
+#include <Servo.h>
+#include <PID_v1.h>
+
+int ledpindebug = 13; //Wireless controller Debug pin. If lit then there is no communication.
+DFW dfw(ledpindebug); // Instantiates the DFW object and setting the debug pin. The debug pin will be set high if no communication is seen after 2 seconds
+
+#define DRIVELEFT 9
+#define DRIVERIGHT 6
+Servo rightDrive;
+Servo leftDrive;
+
+#define LIFTLEFT 8
+#define LIFTRIGHT 5
+Servo rightLift;
+Servo leftLift;
+const int maxLiftSpeed = 100;
+
+
+#define INTAKELIFT 7
+#define INTAKE 4
+Servo intakeLift;
+Servo intake;
+const int maxIntakeSpeed = 100;
+const int maxOuttakeSpeed = -100;
+const int maxIntakeLift = 100;
+
+#define POT 11
+double liftSetpoint, liftInput, liftOutput, liftDown, liftUp;
+const double P_lift = 1;
+const double I_lift = 0;
+const double D_lift = 0;
+const double deadPoint = 10;
+PID liftPID(&liftInput, &liftOutput, &liftSetpoint, P_lift, I_lift, D_lift, DIRECT);
+
+void setup() {
+  Serial.begin(9600); // Serial output begin. Only needed for debug
+  dfw.begin(); // Serial1 output begin for DFW library. Buad and port #."Serial1 only"
+  rightDrive.attach(DRIVERIGHT, 1000, 2000);
+  leftDrive.attach(DRIVELEFT, 1000, 2000);
+  rightDrive.write(90);
+  leftDrive.write(90);
+
+  rightLift.attach(LIFTRIGHT, 1000, 2000);
+  leftLift.attach(LIFTLEFT, 1000, 2000);
+  rightLift.write(90);
+  leftLift.write(90);
+
+  intakeLift.attach(INTAKELIFT, 1000, 2000);
+  intake.attach(INTAKE, 1000, 2000);
+  intakeLift.write(90);
+  intake.write(90);
+
+  liftPID.SetMode(AUTOMATIC);
+  liftPID.SetTunings(P_lift, I_lift, D_lift);
+  liftPID.SetSampleTime(1);
+  liftPID.SetOutputLimits(-90, 90);
+}
+void loop() {
+  dfw.run();
+  if (dfw.getCompetitionState()!= powerup) { //for testing 
+    teleop(0, dfw);
+  }
+ }
+
+void autonomous(long time, DFW & dfw){
+  Serial.print("\r\nAuto time remaining: ");
+  Serial.print(time/1000);
+}
+
+void teleop (long time, DFW & dfw) {
+  Serial.print("\r\nTeleop time remaining: ");
+  Serial.print(time/1000);
+  arcadeDrive();
+  lift();
+  inLift();
+  in();
+  
+}
+
+void inLift() {
+  if (dfw.one()){
+    Serial.println("lift up");
+    intakeLift.write(map(maxIntakeLift, -100, 100, 0, 180));
+  } else if (dfw.three()){
+    Serial.println("lift down");
+    intakeLift.write(map(-maxIntakeLift, -100, 100, 0, 180));
+  } else {
+    intakeLift.write(90);
+  }
+}
+
+void in() {
+  if (dfw.r2()){
+    Serial.println("in");
+    intake.write(map(maxIntakeSpeed,-100, 100, 0, 180));
+  } else if(dfw.r1()){
+    Serial.println("out");
+    intake.write(map(maxOuttakeSpeed,-100, 100, 0, 180));
+  } else {
+    intake.write(90);
+  }
+}
+
+void calibrateLift(){
+  liftDown = analogRead(POT);
+  liftUp = liftDown + 150;
+}
+
+void setLift(int pos){
+  liftInput = analogRead(POT);
+  liftSetpoint = pos;
+  liftPID.Compute();
+  liftMotor.write(liftOutput + 90);
+}
+
+
+void lift(){
+  
+  if (dfw.l1()) {
+    Serial.println("up");
+    rightLift.write(map(maxLiftSpeed, -100, 100, 0, 180));
+    leftLift.write(180-map(maxLiftSpeed, -100, 100, 0, 180));
+  } else if (dfw.l2()) {
+    Serial.println("down");
+    rightLift.write(map(-maxLiftSpeed, -100, 100, 0, 180));
+    leftLift.write(180-map(-maxLiftSpeed, -100, 100, 0, 180));
+  }
+  else {
+    rightLift.write(90);
+    leftLift.write(90);
+  }
+  
+}
+
+void arcadeDrive() {
+  int vel = map(dfw.joysticklv(), 0, 179, -100, 100);  //max speed
+  int dir = map(dfw.joystickrh(), 0, 179, -100, 100);       //direction
+  Serial.println(vel);
+  drive(vel - dir, vel + dir);
+}
+
+void drive(int left, int right){  //from 100 to -100
+  int leftSpeed = map(left, -100, 100, 0, 180);
+  int rightSpeed = map(right, -100, 100, 0, 180);
+  rightDrive.write(rightSpeed);
+  leftDrive.write(180-leftSpeed);
+}
+
