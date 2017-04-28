@@ -2,13 +2,13 @@
 #include "Pinout.h"
 
 Drivetrain::Drivetrain():
-  leftDrive(LEFTDRIVE, isLeftDriveReversed),
-  rightDrive(RIGHTDRIVE, isRightDriveReversed),
+  leftDrive(DRIVELEFT, isDriveLeftReversed),
+  rightDrive(DRIVERIGHT, isDriveRightReversed),
   leftEncoder(ENCODERLEFT1, ENCODERLEFT2),
   rightEncoder(ENCODERRIGHT1, ENCODERRIGHT2)
   {
     
-    leftPID = new PID(&left
+    //leftPID = new PID(&left
     
   }
 

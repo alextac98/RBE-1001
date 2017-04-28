@@ -23,7 +23,7 @@ class Drivetrain{
     float getAvgDistance();
     
     long getLeftTicks();
-    long getRightTicks()
+    long getRightTicks();
     
     void RPMUpdate();
     
@@ -73,20 +73,20 @@ class Drivetrain{
     const double P_leftDIST = 60;
     const double I_leftDIST = 0;
     const double D_leftDIST = 0;
-    double leftInputRPM;
-    double leftSetpointRPM;
-    double leftOutputRPM;
+    double leftInputDIST;
+    double leftSetpointDIST;
+    double leftOutputDIST;
     
-    const double P_rightRPM = 60;
-    const double I_rightRPM = 0;
-    const double D_rightRPM = 0;
-    double rightInputRPM;
-    double rightSetpointRPM;
-    double rightoutputRPM;
+    const double P_rightDIST = 60;
+    const double I_rightDIST = 0;
+    const double D_rightDIST = 0;
+    double rightInputDIST;
+    double rightSetpointDIST;
+    double rightoutputDIST;
     
 //-----Drive Train Constants------------------------------
     const float WHEEL_DIA = 3; //in inches
-    const float PI_VAL = 3.141592654
+    const float PI_VAL = 3.141592654;
     const float CIRCUMFERENCE = WHEEL_DIA * PI_VAL;
     const float ENCODER_COUNT_PER_REV = 2 * 90;
     const float DIST_PER_TICK =  CIRCUMFERENCE/ENCODER_COUNT_PER_REV;
@@ -94,7 +94,7 @@ class Drivetrain{
     const float RIGHT_WHEEL_SLIP_CONSTANT = 1; //accounts for wheel slip, 1 means no wheel slip
 
     const int RPM_UPDATE_HZ = 200; //in hz
-    const int RPM_UPDATE_TIME = 1000/RPM_UPDATE_RATE; //in seconds
+    const int RPM_UPDATE_TIME = 1000/RPM_UPDATE_HZ; //in seconds
 
     long lastRPMUpdate;
     long lastRightRPMCount;
