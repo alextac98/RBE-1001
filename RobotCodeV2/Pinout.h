@@ -22,7 +22,9 @@ const boolean isLiftRightReversed = false;
 //-----Intake Constants--------------------------------
 #define INTAKELIFT 7
 const boolean isIntakeLiftReversed = false;
-#define INTAKELEFT 4
+#define INTAKE 4
+const boolean isIntakeReversed = false;
+#define INTAKELEFT 4       //not used
 const boolean isIntakeLeftReversed = false;
 #define INTAKERIGHT 10     //not used
 const boolean isIntakeRighteReversed = false;
