@@ -14,18 +14,20 @@ class Drivetrain{
 //-----Basic Drive Methods--------------------------------  
     Drivetrain();
     void DrivetrainSetup();
-    void setPower(int, int);
+    void setPower(int, int); //left, right from -100 to 100
+    void turn(float);
 //-----Encoder Methods------------------------------------    
     void zeroEncoders();
-    
-    float getRightDistance();
+
     float getLeftDistance();
+    float getRightDistance();
     float getAvgDistance();
     
     long getLeftTicks();
     long getRightTicks();
     
     void RPMUpdate();
+    void updateALL();
     
     float getLeftRPM();
     float getRightRPM();
@@ -68,7 +70,7 @@ class Drivetrain{
     const double D_rightRPM = 0;
     double rightInputRPM;
     double rightSetpointRPM;
-    double rightoutputRPM;
+    double rightOutputRPM;
     //PID for Distance Variables and Constants
     const double P_leftDIST = 60;
     const double I_leftDIST = 0;
@@ -82,7 +84,7 @@ class Drivetrain{
     const double D_rightDIST = 0;
     double rightInputDIST;
     double rightSetpointDIST;
-    double rightoutputDIST;
+    double rightOutputDIST;
     
 //-----Drive Train Constants------------------------------
     const float WHEEL_DIA = 3; //in inches
@@ -92,9 +94,10 @@ class Drivetrain{
     const float DIST_PER_TICK =  CIRCUMFERENCE/ENCODER_COUNT_PER_REV;
     const float LEFT_WHEEL_SLIP_CONSTANT = 1; //accounts for wheel slip, 1 means no wheel slip
     const float RIGHT_WHEEL_SLIP_CONSTANT = 1; //accounts for wheel slip, 1 means no wheel slip
+    const int DIST_TOLERANCE = 2; //in inch
 
-    const int RPM_UPDATE_HZ = 200; //in hz
-    const int RPM_UPDATE_TIME = 1000/RPM_UPDATE_HZ; //in seconds
+    const int PID_UPDATE_HZ = 200; //in hz
+    const int PID_UPDATE_TIME = 1000/PID_UPDATE_HZ; //in seconds
 
     long lastRPMUpdate;
     long lastRightRPMCount;
@@ -103,7 +106,13 @@ class Drivetrain{
     double leftRPM;
     double rightRPM;
 //-----Private Methods------------------------------------
-    void setPowerManual(int, int); //left, right from -100 to 100
+    void disablePID();
+    void disableRPMPID();
+    void disableDISTPID();
+    
+    void enablePID();
+    void enableRPMPID();
+    void enableDISTPID();
 
 //////////////////////////////////////////////////////////
 

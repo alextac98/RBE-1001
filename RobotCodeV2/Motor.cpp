@@ -7,7 +7,7 @@ Motor::Motor(int pinIn, boolean reverse):motor() {
 /**
  * Sets up the motor
  */
-void Motor::setup() {
+void Motor::motorSetup() {
   motor.attach(pin, 1000, 2000);
   setPower(0);
 }
