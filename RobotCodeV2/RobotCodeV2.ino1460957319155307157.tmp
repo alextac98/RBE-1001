@@ -41,7 +41,7 @@ void setup() {
   drive.DrivetrainSetup();
   intake.intakeSetup();
   lift.liftSetup();
-  lcd.begin(16, 2);
+  lcd.begin(screenWidth, screenHeight);
   lcd.clear();
   lcd.setCursor(3,0);
   lcd.print("Press Start");
@@ -75,8 +75,7 @@ void autonomous(long time,DFW &dfw) { // function definition
 }
 
 void autoBackup(){
-  intake.intakeIn();
-  drive.setDistance(350);
+  drive.setDistance(10);
 }
 //-----Teleop Code------------------------------------------------------------------------------------
 void teleop( long time,DFW &dfw) { // function definition

@@ -72,14 +72,14 @@ class Drivetrain{
     double rightSetpointRPM;
     double rightOutputRPM;
     //PID for Distance Variables and Constants
-    const double P_leftDIST = 60;
+    const double P_leftDIST = 2;
     const double I_leftDIST = 0;
     const double D_leftDIST = 0;
     double leftInputDIST;
     double leftSetpointDIST;
     double leftOutputDIST;
     
-    const double P_rightDIST = 60;
+    const double P_rightDIST = 2;
     const double I_rightDIST = 0;
     const double D_rightDIST = 0;
     double rightInputDIST;

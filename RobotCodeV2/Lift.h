@@ -16,6 +16,9 @@ class Lift{
     void stopAll();
     void calibrate();
     int readPot();
+
+    boolean isUp();
+    boolean isDown();
   private:
     Motor liftLeft;
     Motor liftRight;
@@ -27,7 +30,7 @@ class Lift{
     double liftSetpoint;
     double liftInput;
     double liftOutput;
-    const double P_lift = 2.1;
+    const double P_lift = 1.6;
     const double I_lift = 0;
     const double D_lift = 0;
     
