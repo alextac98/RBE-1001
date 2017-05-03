@@ -5,7 +5,7 @@
 #include <LiquidCrystal.h>
 
 int ledpindebug = 13; //Wireless controller Debug pin. If lit then there is no communication.
-DFW dfw(ledpindebug, autonomous, teleop); // Instantiates the DFW object and setting the debug pin. The debug pin will be set high if no communication is seen after 2 seconds
+DFW dfw(ledpindebug, autonomous, teleop, robotShutdown); // Instantiates the DFW object and setting the debug pin. The debug pin will be set high if no communication is seen after 2 seconds
 //DFW dfw(ledpindebug);
 
 #define DRIVELEFT 9
@@ -106,7 +106,9 @@ void setup() {
   liftPID.SetOutputLimits(-90, 90);
 
   lcd.begin(screenWidth, screenHeight);
-  Serial.begin(9600);
+  lcd.clear();
+  lcd.setCursor(3,0);
+  lcd.print("Press Start");
 }
 void loop() {
   dfw.run();
@@ -121,15 +123,16 @@ void autonomous(long time, DFW &dfw){
   Serial.print("\r\nAuto time remaining: ");
   Serial.print(time/1000);
   autoRedLeft();
-  
-  if (time%1000 == 0){
-    lcd.setCursor(0,0);
+  int timePrinted = (int)time/1000;
+  if (timePrinted !=ifChanged){
+    lcd.clear();
+    lcd.setCursor(3,0);
     lcd.print("Autonomous");
-    lcd.setCursor(0, 1);
-    lcd.print(time/1000);
+    lcd.setCursor(7, 1);
+    lcd.print(timePrinted);
+    ifChanged = timePrinted;
+    
   }
-  
-  
 }
 void autoRedLeft(){
   switch(autoState) {
@@ -246,7 +249,15 @@ void teleop (long time, DFW &dfw) {
   lift();
   inLift();
   in();
-  
+  int timePrintedT = time/1000;
+  if (timePrintedT !=ifChanged){
+    lcd.clear();
+    lcd.setCursor(5,0);
+    lcd.print("Tele-Op");
+    lcd.setCursor(6, 1);
+    lcd.print(timePrintedT);
+    ifChanged = timePrintedT;
+  }
 }
 
 void inLift() {
@@ -318,5 +329,14 @@ void drive(int left, int right){  //from 100 to -100
   int rightSpeed = map(right, -100, 100, 0, 180);
   rightDrive.write(rightSpeed);
   leftDrive.write(180-leftSpeed);
+}
+
+void robotShutdown(){
+  rightDrive.write(90);
+  leftDrive.write(90);
+  rightLift.write(90);
+  leftLift.write(90);
+  intake.write(90);
+  intakeLift.write(90);
 }
 
