@@ -41,7 +41,7 @@ void setup() {
   drive.DrivetrainSetup();
   intake.intakeSetup();
   lift.liftSetup();
-  lcd.begin(16, 2);
+  lcd.begin(screenWidth, screenHeight);
   lcd.clear();
   lcd.setCursor(3,0);
   lcd.print("Press Start");
@@ -50,14 +50,14 @@ void setup() {
 
 void loop() {
 	dfw.run();
-//  if (dfw.getCompetitionState()!= powerup) { //for testing 
-//    teleop(0, dfw);
-//    //autoDrive(2910, 0);
-//    //autoRedLeft();
-//  }
+  if (dfw.getCompetitionState()!= powerup) { //for testing 
+    teleop(0, dfw);
+    //autoDrive(2910, 0);
+    //autoRedLeft();
+  }
 }
 //-----Autonomous Code--------------------------------------------------------------------------------
-void autonomous(long time,DFW &dfw) { // function definition
+void autonomous( long time,DFW &dfw) { // function definition
   Serial.print("\r\nAuto time remaining: ");
   Serial.print(time);
   int timePrintedT = time/1000;
@@ -70,13 +70,11 @@ void autonomous(long time,DFW &dfw) { // function definition
     ifChanged = timePrintedT;
   }
 
-  autoBackup();
   
 }
 
 void autoBackup(){
-  intake.intakeIn();
-  drive.setDistance(350);
+  
 }
 //-----Teleop Code------------------------------------------------------------------------------------
 void teleop( long time,DFW &dfw) { // function definition
@@ -93,13 +91,11 @@ void teleop( long time,DFW &dfw) { // function definition
   }
   arcadeDrive();
   teleLift();
-  teleIntake();
 }
 
 void teleLift(){
   if (dfw.l1()){
     lift.up();
-    //Serial.println("
   } else if (dfw.l2()){
     lift.hold();
   } else {
@@ -108,9 +104,9 @@ void teleLift(){
 }
 
 void teleIntake(){
-  if (dfw.r2()){
+  if (dfw.r1()){
     intake.liftUp();
-  } else if (dfw.r1()){
+  } else if (dfw.r2()){
     intake.liftDown();
   } else {
     intake.liftOff();

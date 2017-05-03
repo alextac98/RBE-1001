@@ -8,7 +8,7 @@
 class Motor {
   public:
     Motor(int pinIn, boolean reverse = false);
-    void setup();
+    void motorSetup();
     void setPower(int);
 
   private:
